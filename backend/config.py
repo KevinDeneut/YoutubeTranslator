@@ -28,7 +28,7 @@ for d in [PROFILES_DIR, JOBS_DIR, TEMP_DIR]:
 
 # Whisper model size: tiny, base, small, medium, large-v3
 # Larger = more accurate, slower
-WHISPER_MODEL = "medium"
+WHISPER_MODEL = "small"
 
 # Whisper compute type: int8 (fast, less VRAM), float16 (better, needs GPU)
 WHISPER_COMPUTE_TYPE = "int8"
@@ -53,7 +53,7 @@ SUPPORTED_LANGUAGES = {
     "zh": "Chinese",
 }
 
-APP_VERSION = "v1"
+APP_VERSION = "v2"
 
 # XTTS supported languages (subset)
 XTTS_LANGUAGES = {

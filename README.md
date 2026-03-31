@@ -138,11 +138,17 @@ Translation pairs must be installed by argostranslate on first use.
 
 - **torchaudio + torchcodec conflict** (torchaudio 2.11 on Windows): the `torchaudio.load()` function is patched at runtime to use `soundfile` as a fallback, avoiding missing FFmpeg DLL errors from torchcodec.
 - **transformers pinned to 4.44.2**: TTS 0.22 requires `BeamSearchScorer` which was removed in transformers 4.45+.
-- Synthesis is sequential per segment — parallel synthesis is a planned optimization for v2.
+- Synthesis is sequential per segment.
 
 ---
 
 ## Versions
+
+### v2 — synthesis optimisations
+
+- **Speaker embedding caching**: XTTS v2 conditioning latents computed once per job and reused for every segment (~20-40% faster synthesis)
+- **Segment merging**: adjacent segments merged into chunks up to 15s before synthesis, drastically reducing the number of TTS calls (~30-50% faster synthesis)
+- **Smaller Whisper model**: `medium` → `small` for faster transcription with minimal quality loss on European languages
 
 ### v1 — initial release
 
@@ -157,5 +163,5 @@ Translation pairs must be installed by argostranslate on first use.
 
 ## Roadmap
 
-- **v2**: pipeline overlapping (transcribe while downloading, translate while transcribing), speaker embedding caching, segment merging before TTS
+- Pipeline overlapping (transcribe while downloading, translate while transcribing)
 - Chrome extension integration
