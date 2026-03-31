@@ -144,10 +144,12 @@ Translation pairs must be installed by argostranslate on first use.
 
 ## Versions
 
-### v2 — synthesis optimisations
+### v2 — speed optimisations (~2× faster end-to-end)
 
-- **Speaker embedding caching**: XTTS v2 conditioning latents computed once per job and reused for every segment (~20-40% faster synthesis)
-- **Segment merging**: adjacent segments merged into chunks up to 15s before synthesis, drastically reducing the number of TTS calls (~30-50% faster synthesis)
+The focus of v2 is **speed, not quality**. The pipeline produces the same result as v1 but in roughly half the time, measured on the same video. Output quality is comparable; the longer synthesis chunks may even improve prosody slightly, but that is a side effect rather than a goal.
+
+- **Speaker embedding caching**: XTTS v2 conditioning latents computed once per job and reused for every segment, eliminating redundant voice analysis on every TTS call (~20-40% faster synthesis)
+- **Segment merging**: adjacent Whisper segments merged into chunks up to 15s before synthesis, drastically reducing the number of TTS calls from ~170 to ~40 for a 17-min video (~30-50% faster synthesis)
 - **Smaller Whisper model**: `medium` → `small` for faster transcription with minimal quality loss on European languages
 
 ### v1 — initial release
