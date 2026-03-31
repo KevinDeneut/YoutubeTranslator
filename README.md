@@ -144,9 +144,20 @@ Translation pairs must be installed by argostranslate on first use.
 
 ## Versions
 
-### v2 — speed optimisations (~2× faster end-to-end)
+### v3 — pipelined pipeline (~2× faster than v2, ~4× faster than v1)
 
-The focus of v2 is **speed, not quality**. The pipeline produces the same result as v1 but in roughly half the time, measured on the same video. Output quality is comparable; the longer synthesis chunks may even improve prosody slightly, but that is a side effect rather than a goal.
+The focus of v3 is **further speed gains through concurrency**. Instead of running transcription, translation, and synthesis sequentially, all three stages now run as concurrent asyncio tasks connected by queues. Synthesis starts as soon as the first translated chunk is ready — no more waiting for the full transcript or translation to finish before the first word is synthesized.
+
+On a CPU-only machine, a 2m39s video now translates in ~6m45s end-to-end.
+
+- **Streaming transcription**: `faster-whisper` segments are yielded lazily and pushed into a queue as they arrive, rather than waiting for the full audio to be transcribed
+- **Concurrent translate stage**: consumes segments from the transcription queue one by one, translates them, and buffers into 15s chunks — feeding the synthesis queue as chunks become ready
+- **Early synthesis start**: synthesis begins as soon as the first chunk is in the queue, overlapping with the remainder of transcription and translation
+- **Parallel latent computation**: speaker embedding latents are computed in parallel with transcription — no extra wait before synthesis can start
+
+### v2 — speed optimisations (~2× faster than v1)
+
+The focus of v2 is **speed, not quality**. Quality is comparable to v1. The pipeline produces the same result as v1 but in roughly half the time, measured on the same video. Output quality is comparable; the longer synthesis chunks may even improve prosody slightly, but that is a side effect rather than a goal.
 
 - **Speaker embedding caching**: XTTS v2 conditioning latents computed once per job and reused for every segment, eliminating redundant voice analysis on every TTS call (~20-40% faster synthesis)
 - **Segment merging**: adjacent Whisper segments merged into chunks up to 15s before synthesis, drastically reducing the number of TTS calls from ~170 to ~40 for a 17-min video (~30-50% faster synthesis)
