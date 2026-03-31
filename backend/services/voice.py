@@ -115,6 +115,23 @@ def _run_inference(text: str, xtts_lang: str, gpt_cond_latent, speaker_embedding
 
 # ─── Segment merging ───────────────────────────────────────────────────────────
 
+def _merge_buffer(buffer: list[dict]) -> dict:
+    """Collapse a buffer of segments into one merged segment (used by the pipeline)."""
+    if len(buffer) == 1:
+        return buffer[0]
+    merged = dict(buffer[0])
+    for seg in buffer[1:]:
+        for key in ("translated_text", "text"):
+            if key in merged or key in seg:
+                merged[key] = (
+                    (merged.get(key) or "").rstrip() + " " + (seg.get(key) or "").lstrip()
+                ).strip()
+        merged["end"] = seg["end"]
+    merged["_sub_count"] = len(buffer)
+    return merged
+
+
+
 def merge_segments(segments: list[dict], max_duration: float = MAX_SEGMENT_DURATION) -> list[dict]:
     """
     Merge adjacent segments into chunks up to max_duration seconds.

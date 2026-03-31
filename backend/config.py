@@ -53,7 +53,7 @@ SUPPORTED_LANGUAGES = {
     "zh": "Chinese",
 }
 
-APP_VERSION = "v2"
+APP_VERSION = "v3"
 
 # XTTS supported languages (subset)
 XTTS_LANGUAGES = {

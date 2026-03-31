@@ -8,6 +8,11 @@ import argostranslate.package
 import argostranslate.translate
 
 
+def ensure_language_pair(source_lang: str, target_lang: str) -> None:
+    """Public alias — pre-install translation packages before the pipeline starts."""
+    _ensure_language_pair(source_lang, target_lang)
+
+
 def _ensure_language_pair(source_lang: str, target_lang: str) -> None:
     """Download and install the translation package if not already present."""
     installed = argostranslate.translate.get_installed_languages()

@@ -20,6 +20,39 @@ def _get_model() -> WhisperModel:
     return _model
 
 
+async def transcribe_stream(
+    audio_path: Path,
+    language: str | None,
+    queue: asyncio.Queue,
+) -> None:
+    """
+    Stream transcription segments into an asyncio.Queue as they are produced.
+    Puts None as sentinel when done — caller must drain until None is received.
+    Uses call_soon_threadsafe so the thread-based whisper generator bridges
+    safely into the running event loop.
+    """
+    loop = asyncio.get_running_loop()
+
+    def _run():
+        model = _get_model()
+        segs, _ = model.transcribe(
+            str(audio_path),
+            language=language,
+            word_timestamps=True,
+            vad_filter=True,
+            vad_parameters={"min_silence_duration_ms": 500},
+        )
+        for seg in segs:
+            loop.call_soon_threadsafe(queue.put_nowait, {
+                "start": seg.start,
+                "end": seg.end,
+                "text": seg.text.strip(),
+            })
+        loop.call_soon_threadsafe(queue.put_nowait, None)
+
+    await loop.run_in_executor(None, _run)
+
+
 async def transcribe(audio_path: Path, language: str | None = None) -> list[dict]:
     """
     Transcribe audio file and return segments with timestamps.
