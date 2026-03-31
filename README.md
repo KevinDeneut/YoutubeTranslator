@@ -144,11 +144,11 @@ Translation pairs must be installed by argostranslate on first use.
 
 ## Versions
 
-### v3 — pipelined pipeline (~2× faster than v2, ~4× faster than v1)
+### v3 — pipelined stages (faster than v2, gains scale with video length)
 
 The focus of v3 is **further speed gains through concurrency**. Instead of running transcription, translation, and synthesis sequentially, all three stages now run as concurrent asyncio tasks connected by queues. Synthesis starts as soon as the first translated chunk is ready — no more waiting for the full transcript or translation to finish before the first word is synthesized.
 
-On a CPU-only machine, a 2m39s video now translates in ~6m45s end-to-end.
+The speed gain over v2 scales with video length: the longer the video, the more synthesis overlaps with the remaining transcription and translation. On a CPU-only machine, a 2m39s video translates in ~6m45s end-to-end.
 
 - **Streaming transcription**: `faster-whisper` segments are yielded lazily and pushed into a queue as they arrive, rather than waiting for the full audio to be transcribed
 - **Concurrent translate stage**: consumes segments from the transcription queue one by one, translates them, and buffers into 15s chunks — feeding the synthesis queue as chunks become ready
