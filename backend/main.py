@@ -274,9 +274,10 @@ async def translate_video(req: TranslateRequest):
             segments_dir.mkdir(parents=True, exist_ok=True)
 
             # Start computing speaker latents immediately (only needs reference audio)
-            latents_task = asyncio.create_task(
-                loop.run_in_executor(None, _compute_speaker_latents, reference_audio)
-            )
+            async def _compute_latents():
+                return await loop.run_in_executor(None, _compute_speaker_latents, reference_audio)
+
+            latents_task = asyncio.create_task(_compute_latents())
 
             timing["transcribe_start"] = time.time()
             timing["translate_start"] = time.time()
