@@ -1,0 +1,26 @@
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+
+# YouTube download
+yt-dlp>=2024.4.9
+
+# Transcription (local Whisper)
+faster-whisper>=1.0.1
+
+# Translation (fully offline)
+argostranslate>=1.9.6
+
+# Voice cloning + TTS (Coqui XTTS v2)
+TTS>=0.22.0
+
+# Audio/video processing
+ffmpeg-python>=0.2.0
+pydub>=0.25.1
+
+# Pin transformers — TTS 0.22 requires BeamSearchScorer which was removed in 4.45+
+transformers==4.44.2
+
+# Utilities
+aiofiles>=23.2.1
+python-dotenv>=1.0.1

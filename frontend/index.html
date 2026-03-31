@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>YoutubeTranslator</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <div class="wordmark">YoutubeTranslator</div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="translate">Translate</button>
+      <button class="tab" data-tab="profiles">Voice profiles</button>
+      <button class="tab" data-tab="jobs">Jobs</button>
+    </nav>
+
+    <!-- Translate tab -->
+    <section id="tab-translate" class="tab-content active">
+      <div class="card">
+        <label class="field">
+          <span>YouTube URL</span>
+          <div class="input-row">
+            <input type="url" id="translate-url" placeholder="https://www.youtube.com/watch?v=..." />
+            <button id="btn-fetch-info">Load</button>
+          </div>
+        </label>
+
+        <div id="video-preview" class="video-preview hidden">
+          <img id="video-thumb" src="" alt="" />
+          <div class="video-meta">
+            <div id="video-title"></div>
+            <div id="video-channel"></div>
+            <div id="video-duration"></div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Source language</span>
+            <select id="source-lang">
+              <option value="">Auto-detect</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Target language</span>
+            <select id="target-lang"></select>
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Voice profile</span>
+          <select id="voice-profile">
+            <option value="">Select a voice profile</option>
+          </select>
+        </label>
+
+        <button id="btn-translate" class="btn-primary" disabled>Start translation</button>
+      </div>
+
+      <div id="job-progress" class="card hidden">
+        <div class="progress-label">
+          <span>Processing</span>
+          <span id="progress-text">Starting...</span>
+        </div>
+        <div class="progress-bar"><div id="progress-fill"></div></div>
+
+        <div id="result-area" class="hidden">
+          <video id="result-video" controls></video>
+          <a id="result-download" href="#" download>Download</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Voice Profiles tab -->
+    <section id="tab-profiles" class="tab-content">
+      <div class="card">
+        <h2>New profile</h2>
+        <p class="desc">Extract a voice sample from a YouTube video. Pick a moment where the speaker is clearly audible, without background music.</p>
+
+        <label class="field">
+          <span>Name</span>
+          <input type="text" id="profile-name" placeholder="e.g. MrBeast" />
+        </label>
+        <label class="field">
+          <span>YouTube URL</span>
+          <div class="input-row">
+            <input type="url" id="profile-url" placeholder="https://www.youtube.com/watch?v=..." />
+            <button id="btn-profile-fetch">Load</button>
+          </div>
+        </label>
+
+        <div id="profile-video-preview" class="video-preview hidden">
+          <img id="profile-thumb" src="" alt="" />
+          <div class="video-meta">
+            <div id="profile-title"></div>
+            <div id="profile-channel"></div>
+            <div id="profile-video-duration"></div>
+          </div>
+        </div>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Start (seconds)</span>
+            <input type="number" id="profile-start" value="30" min="0" />
+          </label>
+          <label class="field">
+            <span>Duration (seconds)</span>
+            <input type="number" id="profile-duration" value="20" min="5" max="60" />
+          </label>
+        </div>
+
+        <div id="profile-interval-hint" class="interval-hint hidden">
+          Sample: <span id="interval-display"></span>
+        </div>
+
+        <button id="btn-create-profile" class="btn-primary">Create profile</button>
+
+        <div id="profile-progress" class="hidden" style="margin-top: 16px">
+          <div class="progress-label">
+            <span>Processing</span>
+            <span id="profile-progress-text">Starting...</span>
+          </div>
+          <div class="progress-bar"><div id="profile-progress-fill"></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Saved profiles</h2>
+        <div id="profiles-list">
+          <p class="empty">No profiles yet.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Jobs tab -->
+    <section id="tab-jobs" class="tab-content">
+      <div class="card">
+        <div class="card-header">
+          <h2>Jobs</h2>
+          <button id="btn-refresh-jobs" class="btn-ghost">Refresh</button>
+        </div>
+        <div id="jobs-list">
+          <p class="empty">No jobs yet.</p>
+        </div>
+      </div>
+      <div id="job-detail" class="card hidden"></div>
+    </section>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
